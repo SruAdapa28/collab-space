@@ -6,6 +6,7 @@ package com.info6250.newproject.service;
 
 import com.info6250.newproject.dao.ProjectDAO;
 import com.info6250.newproject.entity.Project;
+import com.info6250.newproject.entity.User;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,9 @@ public class ProjectService {
 
     public void deleteProjectById(Integer projectId) {
         projectDAO.deleteById(projectId);
+    }
+    
+    public List<Project> findProjectsByManager(User manager) {
+        return projectDAO.findByManagedBy(manager);
     }
 }

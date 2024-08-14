@@ -6,6 +6,8 @@ package com.info6250.newproject.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,8 +37,9 @@ public class Task {
     @Column
     private java.sql.Date dueDate;
 
-    @Column
-    private String status;
+    @Enumerated(EnumType.STRING) 
+    @Column(nullable = false)
+    private TaskStatus status= TaskStatus.TO_DO;
 
     @ManyToOne
     @JoinColumn(name = "assignedTo", nullable = false)
@@ -78,11 +81,11 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
