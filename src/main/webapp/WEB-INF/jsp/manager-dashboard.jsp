@@ -9,8 +9,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Manager Dashboard</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
 </head>
 <body>
     <h1>Welcome, ${username}!</h1>
@@ -34,5 +37,10 @@
             </tr>
         </c:forEach>
     </table>
+    
+    <h3>Messages</h3>
+    <a href="/newproject/chat/user-chat">Go to Chat</a>
+    
+    <a href="/newproject/auth/logout">Logout</a>
 </body>
 </html>

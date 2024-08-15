@@ -9,8 +9,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Admin Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
     </head>
 <body>
     <h1>Welcome, ${username}!</h1>
@@ -84,5 +87,7 @@
         <input type="hidden" name="createdByUsername" value="${username}">
         <input type="submit" value="Add Project">
     </form>
+        
+     <a href="/newproject/auth/logout">Logout</a>
 </body>
 </html>

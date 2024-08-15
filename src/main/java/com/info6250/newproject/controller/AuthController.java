@@ -30,7 +30,8 @@ public class AuthController {
     private UserService userService;
     
     @GetMapping("/register")
-    public String showRegistrationPage() {
+    public String showRegistrationPage(HttpSession session) {
+        session.invalidate(); 
         return "register";
     }
 
@@ -88,5 +89,11 @@ public class AuthController {
         }
         
         return "login"; 
+    }
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); 
+        return "redirect:/auth/login";
     }
 }

@@ -9,6 +9,7 @@ import com.info6250.newproject.entity.Role;
 import com.info6250.newproject.entity.User;
 import com.info6250.newproject.service.ProjectService;
 import com.info6250.newproject.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -40,8 +41,17 @@ public class AdminController {
     private ProjectService projectService;
     
     @GetMapping("/dashboard")
-    public String showAdminDashboard(HttpSession session, Model model) {
+    public String showAdminDashboard(HttpSession session, HttpServletResponse response, Model model) {
         String username = (String) session.getAttribute("username");
+        
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+        
+        if(username==null){
+            model.addAttribute("errorMessage", "Page does not exist");
+            return "error";
+        }
         
         List<User> users = userService.getAllUsers();
         List<Project> projects = projectService.getAllProjects();
@@ -55,12 +65,12 @@ public class AdminController {
         return "admin-dashboard";
     }
 
-    @GetMapping("/projects")
-    public String showProjectsPage(Model model) {
-        model.addAttribute("projects", projectService.getAllProjects());
-        model.addAttribute("newProject", new Project());
-        return "projects";
-    }
+//    @GetMapping("/projects")
+//    public String showProjectsPage(Model model) {
+//        model.addAttribute("projects", projectService.getAllProjects());
+//        model.addAttribute("newProject", new Project());
+//        return "projects";
+//    }
 
     @PostMapping("/addProject")
     public String addProject(@RequestParam String projectName,
@@ -126,9 +136,18 @@ public class AdminController {
     
     @GetMapping("/editProject/{id}")
     public String showEditProjectForm(@PathVariable("id") Integer projectId,
-                                        HttpSession session,
+                                        HttpSession session,  HttpServletResponse response,
                                         Model model) {
         String username = (String) session.getAttribute("username");
+        
+        if(username==null){
+            model.addAttribute("errorMessage", "Page does not exist");
+            return "error";
+        }
+        
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
         Project project = projectService.findById(projectId);
         List<User> managers = userService.findUsersByRole(Role.PROJECT_MANAGER);
         

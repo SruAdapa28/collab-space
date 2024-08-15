@@ -4,16 +4,20 @@
  */
 package com.info6250.newproject.controller;
 
+import com.info6250.newproject.entity.Message;
 import com.info6250.newproject.entity.Project;
 import com.info6250.newproject.entity.Role;
 import com.info6250.newproject.entity.Task;
 import com.info6250.newproject.entity.TaskStatus;
 import com.info6250.newproject.entity.User;
+import com.info6250.newproject.service.MessageService;
 import com.info6250.newproject.service.ProjectService;
 import com.info6250.newproject.service.TaskService;
 import com.info6250.newproject.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +47,24 @@ public class ManagerController {
     
     @Autowired
     private TaskService taskService;
+    
+    @Autowired
+    private MessageService messageService;
 
     @GetMapping("/dashboard")
-    public String showManagerDashboard(HttpSession session, Model model) {
+    public String showManagerDashboard(HttpSession session, HttpServletResponse response, Model model) {
         String username = (String) session.getAttribute("username");
+        
+        if(username==null){
+            model.addAttribute("errorMessage", "Page does not exist");
+            return "error";
+        }
+        
+        // Prevent caching of this page
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+        
         User manager = userService.findByUsername(username);
 
         List<Project> projects = projectService.findProjectsByManager(manager);
@@ -58,7 +76,19 @@ public class ManagerController {
     
     @GetMapping("/viewProject/{projectId}")
     public String viewProjectTasks(@PathVariable("projectId") Integer projectId,
-                                    Model model, HttpSession session) {
+                                    Model model, HttpSession session, HttpServletResponse response) {
+        
+        String username = (String) session.getAttribute("username");
+        
+        if(username==null){
+            model.addAttribute("errorMessage", "Page does not exist");
+            return "error";
+        }
+        
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+        
         Project project = projectService.findById(projectId);
         List<Task> tasks = (List<Task>) taskService.findTasksByProject(project);
         List<User> developers = userService.findUsersByRole(Role.DEVELOPER_CONTRIBUTOR);
@@ -69,7 +99,6 @@ public class ManagerController {
         model.addAttribute("developers", developers);
         model.addAttribute("taskStatus", TaskStatus.values());
         
-        String username = (String) session.getAttribute("username");
         model.addAttribute("username", username);
 
         return "manager-view-project";
@@ -108,7 +137,20 @@ public class ManagerController {
     }
     
     @GetMapping("/editTask/{taskId}")
-    public String showEditTaskForm(@PathVariable("taskId") Integer taskId, Model model) {
+    public String showEditTaskForm(@PathVariable("taskId") Integer taskId, Model model, 
+            HttpSession session, HttpServletResponse response) {
+        
+        String username = (String) session.getAttribute("username");
+        
+        if(username==null){
+            model.addAttribute("errorMessage", "Page does not exist");
+            return "error";
+        }
+        
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+        
         Task task = taskService.findById(taskId);
         List<User> developers = userService.findUsersByRole(Role.DEVELOPER_CONTRIBUTOR);
 
@@ -157,5 +199,6 @@ public class ManagerController {
 
         return "redirect:/manager/viewProject/" + projectId;
     }
+    
 }
 
